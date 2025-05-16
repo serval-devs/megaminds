@@ -1,6 +1,5 @@
 *** Settings ***
-Resource    keywords
-Library    game_test_api.py
+Resource    keywords.resource
 
 *** Test Cases ***
 Verify of the code can have double signs
@@ -17,16 +16,30 @@ Verify that we get a error when the guess is too long
     Given Start a game with this code ${code}
     When The Game Receives A New Guess {input}    #what is wrong
     Then The Game reports error
-    
+
 Verify that we get a error when the guess has the wrong signs
     Given Start a game with this code ${code}
     When The Game Receives A New Guess {input}    #what is wrong
     Then The Game reports error ${error report}
-    
-Check the result after a guess
+
+Check the result and the history after a guess
+    Given The Game Is Started
+    And The Game Is Started With Code #%#$
+    When The Game Receives A New Guess #%%#
+    Then Results should be ${result} #P=2, S=1
+    And History should have guess #%%#
 
 Is the attempt counter decreasing
-Are the previous guesses in the history
-Can the game end
-Can we win the game
+    Given The Game Is Started
+    And The Game Is Started With Code #%#$
+    When The Game Receives 5 Guesses For #%#$
+    Then The Number Of Guesses should be 5
+
+Losing a Game
+    Given The Game Is Started
+    And The Game Is Started With Code ${code}
+    When The Game Receives 10 Guesses for ${code}
+    Then
+
+Winning a Game
 Is it possible to start a new game after end game

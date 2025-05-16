@@ -18,7 +18,7 @@ class GameKeywords:
             return
         return self.game.start(code)
 
-    @keyword("The Game Receives A New Guess {input}",
+    @keyword("The Game Receives A New Guess ${input}",
         types={'input': str})
     def handle_turn(self, input_str: str):
         return self.game.handle_turn(input_str)
