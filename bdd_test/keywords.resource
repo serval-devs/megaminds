@@ -1,5 +1,5 @@
 *** Settings ***
-Library    megaminds.bdd_test.game_test_api.GameKeywords
+Library    bdd_test.game_test_api.GameKeywords
 
 *** Keywords ***
 Start a new board game

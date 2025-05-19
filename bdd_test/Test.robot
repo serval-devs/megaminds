@@ -13,7 +13,6 @@ Verify that we get a error when the guess is too short
     When The Game Receives A New Guess ${input}    #what is wrong
     Then The Game reports error ${error report}
 
-
 Verify that we get a error when the guess is too long
     Given The Game Is Started
     And The Game Is Started With Code ${code}
