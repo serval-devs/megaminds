@@ -1,11 +1,7 @@
 *** Settings ***
-Library    game_test_api.py
+Library    bdd_test.game_test_api.GameKeywords
 
 *** Keywords ***
-The Game Is Started With Code ${code}
-
-No Operation
-
 Verify that the code is accepted
 
 The Game reports error ${error report}
