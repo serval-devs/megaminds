@@ -123,7 +123,7 @@ def test_cannot_win_after_max_tries(game):
 
     for i in range(MAX_TRIES):
         assert game.handle_turn("@@@@") is None and game.nr_of_guesses_left == MAX_TRIES-i-1
-    assert game.handle_turn("@!$#") == Msg.ReachedMaxGuesses and game.nr_of_guesses_left == 0
+    assert game.handle_turn("@!$#") is Msg.GameNotRunning and game.nr_of_guesses_left == 0
 
 def test_winning_seventh_try(game):
     code = "@!$#"
