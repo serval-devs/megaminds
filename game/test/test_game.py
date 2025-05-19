@@ -140,6 +140,17 @@ def test_won_game(won_game):
 def test_game_not_running(game, input_str):
     assert game.handle_turn(input_str) == Msg.GameNotRunning
 
+def test_get_board(game):
+    game.start("!!@#")
+    assert game.handle_turn("!#%%") is None
+    assert game.get_board_entries() == ["!#%% | P1, S1"]
+    assert game.handle_turn("!!##") is None
+    assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0"]
+    assert game.handle_turn("!!@#") is Msg.GameWon
+    assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0", "!!@# | P4, S0"]
+    assert game.handle_turn("!!@#") is Msg.GameNotRunning
+    # assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0", "!!@# | P4, S0", "!!@# | P4, S0"]
+    print(game.get_board_entries())
 # def test_board(game):
 #     game.start("!@#$")
 #     assert game.handle_turn("!%%%") is None
