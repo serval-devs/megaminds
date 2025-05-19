@@ -40,5 +40,5 @@ class GameKeywords:
         return self.game.get_guesses()
 
     @keyword("Get All The Results")
-    def get_guesses(self):
+    def get_results(self):
         return self.game.get_results()
