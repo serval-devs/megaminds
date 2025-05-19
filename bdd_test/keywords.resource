@@ -26,3 +26,14 @@ History should have guess ${input}
 History Should Have Result ${result}
     ${history}=    Get The Game History
     Should Contain    ${history}    ${result}
+
+The Game Receives The Input ${input}
+    set test variable    $guess    ${input}
+
+The Game Gives An Error When The Guess Is Too Short
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Not enough signs entered.
+
+The Game Gives An Error When The Guess Is Too Long
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Too many signs entered.
