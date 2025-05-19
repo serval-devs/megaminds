@@ -9,21 +9,21 @@ Start a new game and verify of a code is generated
 
 Verify that we get a error when the guess is too short
     Given The Game Is Started
-    And The Game Is Started With Code ${code}
-    When The Game Receives A New Guess ${input}    #what is wrong
+    And The Game Is Started With Code #$!@
+    When The Game Receives A New Guess #$!    #what is wrong
     Then The Game reports error ${error report}
 
 
 Verify that we get a error when the guess is too long
     Given The Game Is Started
-    And The Game Is Started With Code ${code}
-    When The Game Receives A New Guess ${input}    #what is wrong
+    And The Game Is Started With Code #$!@
+    When The Game Receives A New Guess #$!!$#    #what is wrong
     Then The Game reports error ${error report}
 
 Verify that we get a error when the guess has the wrong signs
     Given The Game Is Started
-    And The Game Is Started With Code ${code}
-    When The Game Receives A New Guess ${input}    #what is wrong
+    And The Game Is Started With Code #$!@
+    When The Game Receives A New Guess #&*!    #what is wrong
     Then The Game reports error ${error report}
 
 Check the result and the history after a guess
@@ -37,8 +37,8 @@ Check the result and the history after a guess
 Is the attempt counter decreasing
     Given The Game Is Started
     And The Game Is Started With Code #%#$
-    When The Game Receives 5 Guesses For #%#$
-    Then The Number Of Guesses should be 5
+    When The Game Receives A New Guess #%%#
+    Then The Number Of Guesses should be 9
 
 Losing a Game
     Given The Game Is Started
