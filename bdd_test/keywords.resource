@@ -37,3 +37,7 @@ The Game Gives An Error When The Guess Is Too Short
 The Game Gives An Error When The Guess Is Too Long
     ${error}=    The Game Receives A New Guess ${guess}
     Should Be Equal    ${error}    Too many signs entered.
+
+The Game Gives An Error When The Guess Contains Wrong Signs
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Invalid signs entered.

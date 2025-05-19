@@ -21,9 +21,9 @@ Verify that we get a error when the guess is too long
 
 Verify that we get a error when the guess has the wrong signs
     Given The Game Is Started
-    And The Game Is Started With Code ${code}
-    When The Game Receives A New Guess ${input}    #what is wrong
-    Then The Game reports error ${error report}
+    And The Game Is Started With Code #$!@
+    And The Game Receives The Input abcd
+    Then The Game Gives An Error When The Guess Contains Wrong Signs
 
 Check the result and the history after a guess
     Given The Game Is Started
