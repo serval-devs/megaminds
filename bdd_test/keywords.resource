@@ -12,7 +12,8 @@ Check if the secret is equal to ${myCode}
     Should Be Equal    ${locCode}    ${myCode}
 
 The Number Of Guesses should be ${amount}
-    ${guesses}=    Get Count
+    ${guesses}=    Get The Number Of Guesses
+    ${amount}=    Convert To Integer    ${amount}
     Should Be Equal    ${guesses}    ${amount}
 
 Results should be ${result}
@@ -26,3 +27,22 @@ History should have guess ${input}
 History Should Have Result ${result}
     ${history}=    Get The Game History
     Should Contain    ${history}    ${result}
+
+The Game Receives ${amount} Guesses for ${code}
+    FOR    ${index}    IN RANGE    ${amount}
+        ${input}=    Generate Valid Input    ${code}
+        The Game Receives A New Guess ${input}
+    END
+
+Generate Valid Input
+    [Arguments]    ${code}
+    ${input}=    Generate Random Input
+    WHILE    '${input}' == '${code}'
+        ${input}=    Generate Random Input
+    END
+    [Return]    ${input}
+
+Generate Random Input
+    ${input}=    Evaluate    ''.join(random.choices(['!', '$', '#', '%', '&'], k=4))    modules=random
+    [Return]    ${input}
+
