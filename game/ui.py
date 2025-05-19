@@ -1,6 +1,6 @@
 import os
 from colorama import Fore, Style
-from game import *
+from game.game import *
 
 SEPARATOR_STRING = "------------------------"
 
@@ -63,11 +63,6 @@ class UI:
                     err = Msg.CodeHasTooManySigns
                 case Msg.CodeHasNotEnoughSigns:
                     err = Msg.CodeHasNotEnoughSigns
-                case Msg.ReachedMaxGuesses:
-                    err = Msg.ReachedMaxGuesses
-                case Msg.GameWon:
-                    print(f"{Fore.GREEN}{Msg.GameWon}{Style.RESET_ALL}")
-                    return
                 case _:
                     return
 
@@ -79,29 +74,25 @@ class UI:
 
     def run_game_loop(self):
         while True:
-            if ui.game._game_state == GameState.Running:
+            if self.game._game_state == GameState.Running:
                 clear()
-                ui.draw_instructions()
-                ui.draw_board()
-                ui.handle_guess()
-            elif ui.game._game_state == GameState.Lost:
+                self.draw_instructions()
+                self.draw_board()
+                self.handle_guess()
+            elif self.game._game_state == GameState.Lost:
                 clear()
-                ui.draw_instructions()
-                ui.draw_board()
-                correct_code = ui.game.get_code()
+                self.draw_instructions()
+                self.draw_board()
+                correct_code = self.game.get_code()
                 print(GAME_LOST_STRING.format(correct_code=correct_code))
                 self.restart()
-            elif ui.game._game_state == GameState.Won:
+            elif self.game._game_state == GameState.Won:
                 clear()
-                ui.draw_instructions()
-                ui.draw_board()
-                correct_code = ui.game.get_code()
-                num_tries = ui.game.get_guess_count()
+                self.draw_instructions()
+                self.draw_board()
+                correct_code = self.game.get_code()
+                num_tries = self.game.get_guess_count()
                 print(GAME_WON_STRING.format(guess=correct_code, num_tries=num_tries))
                 self.restart()
-            elif ui.game._game_state == GameState.NotRunning:
+            elif self.game._game_state == GameState.NotRunning:
                 break
-
-
-ui = UI()
-ui.run_game_loop()
