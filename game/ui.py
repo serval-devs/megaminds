@@ -21,7 +21,7 @@ So, to win, a player must guess the code composed by the machine within 10 tries
 GAME_WON_STRING = """
 Congratulations!
 Your guess {guess} was correct!
-You have guessed it with your {num_tries} try.
+You have guessed it with {num_tries} tries.
  
 Press ENTER to start a new game.
 """
