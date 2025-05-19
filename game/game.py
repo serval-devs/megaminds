@@ -5,11 +5,14 @@ from random import choices
 from webbrowser import Error
 
 
-class ErrorMsg(StrEnum):
+class Msg(StrEnum):
     CodeHasNotEnoughSigns = "Not enough signs entered."
     CodeHasInvalidSigns = "Invalid signs entered."
     CodeHasTooManySigns = "Too many signs entered."
     InitialCodeInvalid = "Initial code is invalid."
+    ReachedMaxGuesses = "The maximum number of guesses has been reached."
+    GameWon = "You won the game!"
+    GameNotRunning = "Game is not running!"
 
 ACCEPTED_SYMBOLS = ["!", "@", "#", "$", "%"]
 CODE_LENGTH = 4
@@ -36,19 +39,18 @@ def _count_correct_symbols(code_list: List[str | None], guess_list: List[str | N
     return result_sym
 
 
-def _validate_code(input_str: str) -> Optional[ErrorMsg]:
+def _validate_code(input_str: str) -> Optional[Msg]:
     if len(input_str) < CODE_LENGTH:
-        return ErrorMsg.CodeHasNotEnoughSigns
+        return Msg.CodeHasNotEnoughSigns
     elif len(input_str) > CODE_LENGTH:
-        return ErrorMsg.CodeHasTooManySigns
+        return Msg.CodeHasTooManySigns
     elif not all(s in ACCEPTED_SYMBOLS for s in input_str):
-        return ErrorMsg.CodeHasInvalidSigns
+        return Msg.CodeHasInvalidSigns
 
 
 class Game:
     def __init__(self, code_string: str= None):
-        self.nr_of_guesses_left: int = 0
-        self.game_over: bool = False
+        self.nr_of_guesses_left: int = MAX_TRIES
         self._is_running: bool = False
         self._board: List[str] = []
         self._guesses: List[str] = []
@@ -56,17 +58,17 @@ class Game:
         self._secret_code: str = ""
         self.last_result: str = ""
 
-    def start(self, code_string: str = None) -> Optional[ErrorMsg]:
+    def start(self, code_string: str = None) -> Optional[Msg]:
         if code_string is None:
             self._secret_code = choices(ACCEPTED_SYMBOLS, k=CODE_LENGTH)
             self._is_running = True
         elif _validate_code(code_string) is None:
-            self._secret_code = [char for char in code_string]
+            self._secret_code = code_string
             self._is_running = True
         else:
-            return ErrorMsg.InitialCodeInvalid
+            return Msg.InitialCodeInvalid
 
-    def handle_turn(self, guess: str) -> Optional[ErrorMsg]:
+    def _make_guess(self, guess: str) -> Optional[Msg]:
         if err := _validate_code(guess):
             return err
 
@@ -77,6 +79,20 @@ class Game:
         self._results.append(result := f"P{pos_count}, S{sym_count}")
         self.last_result = result
         self._board.append(f"{guess} | {result}")
+
+    def handle_turn(self, guess: str) -> Optional[Msg]:
+        if self._is_running is False:
+            return Msg.GameNotRunning
+
+        if self.nr_of_guesses_left > 0:
+            if err := self._make_guess(guess):
+                return err
+            self.nr_of_guesses_left -= 1
+            if guess == self._secret_code:
+                self._is_running = False
+                return Msg.GameWon
+        else:
+            return Msg.ReachedMaxGuesses
 
     def get_board_entries(self) -> List[str]:
         return self._board

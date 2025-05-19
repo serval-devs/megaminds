@@ -1,12 +1,27 @@
 from webbrowser import Error
 
 import pytest
-from game.game import Game, _validate_code
-from game.game import ErrorMsg
+from game.game import Game, _validate_code, MAX_TRIES
+from game.game import Msg
 
 @pytest.fixture
 def game():
     return Game()
+
+@pytest.fixture
+def won_game():
+    game = Game()
+    game.start("!!!!")
+    game.handle_turn("!!!!")
+    return game
+
+@pytest.fixture
+def lost_game():
+    game = Game()
+    game.start("!!!!")
+    for i in range(MAX_TRIES):
+        game.handle_turn("@@@@")
+    return game
 
 def test_start_game_with_random_code():
     for i in range(100):
@@ -15,7 +30,7 @@ def test_start_game_with_random_code():
         assert _validate_code("".join(game._secret_code)) is None
 
 def test_start_game_with_input(game):
-    assert game.start("aaaaa") == ErrorMsg.InitialCodeInvalid
+    assert game.start("aaaaa") == Msg.InitialCodeInvalid
     assert game.start("!$$#") is None
 
 def test_is_running(game):
@@ -23,10 +38,10 @@ def test_is_running(game):
     assert game.is_running()
 
 def test_is_code_valid(game):
-    assert _validate_code("aaaa") == ErrorMsg.CodeHasInvalidSigns
-    assert _validate_code("#####") == ErrorMsg.CodeHasTooManySigns
-    assert _validate_code("###") == ErrorMsg.CodeHasNotEnoughSigns
-    assert _validate_code("!@@a") == ErrorMsg.CodeHasInvalidSigns
+    assert _validate_code("aaaa") == Msg.CodeHasInvalidSigns
+    assert _validate_code("#####") == Msg.CodeHasTooManySigns
+    assert _validate_code("###") == Msg.CodeHasNotEnoughSigns
+    assert _validate_code("!@@a") == Msg.CodeHasInvalidSigns
     assert _validate_code("!@#$") is None
     assert _validate_code("!!@@") is None
 
@@ -56,7 +71,6 @@ def test_handle_valid_turn_correct_symbols_with_duplicate_symbols(game, code, gu
     ("!@#$", "!%%%", "P1, S0"),
     ("!@#$", "!%%$", "P2, S0"),
     ("!@#$", "!@#%", "P3, S0"),
-    ("!@#$", "!@#$", "P4, S0"),
 ])
 def test_handle_valid_turn_positions_and_symbols(game, code, guess, expected_result):
     game.start(code)
@@ -82,13 +96,49 @@ def test_handle_valid_turn_both_p_and_s_non_zero(game, code, guess, expected_res
     assert game.last_result == expected_result
 
 @pytest.mark.parametrize("code, guess, expected_error_msg",[
-    ("@@##", "@#!@#", ErrorMsg.CodeHasTooManySigns),
-    ("@@##", "@#!", ErrorMsg.CodeHasNotEnoughSigns),
-    ("@@##", "@#!a", ErrorMsg.CodeHasInvalidSigns),
+    ("@@##", "@#!@#", Msg.CodeHasTooManySigns),
+    ("@@##", "@#!", Msg.CodeHasNotEnoughSigns),
+    ("@@##", "@#!a", Msg.CodeHasInvalidSigns),
 ])
 def test_handle_invalid_turn(game, code, guess, expected_error_msg):
     game.start(code)
     assert game.handle_turn(guess) == expected_error_msg
+
+def test_winning_first_try(game):
+    code = "@!$#"
+    game.start(code)
+    assert game.handle_turn("@!$#") == Msg.GameWon
+
+def test_winning_last_try(game):
+    code = "@!$#"
+    game.start(code)
+
+    for i in range(MAX_TRIES-1):
+        assert game.handle_turn("@@@@") is None and game.nr_of_guesses_left == MAX_TRIES-i-1
+    assert game.handle_turn("@!$#") == Msg.GameWon
+
+def test_cannot_win_after_max_tries(game):
+    code = "@!$#"
+    game.start(code)
+
+    for i in range(MAX_TRIES):
+        assert game.handle_turn("@@@@") is None and game.nr_of_guesses_left == MAX_TRIES-i-1
+    assert game.handle_turn("@!$#") == Msg.ReachedMaxGuesses and game.nr_of_guesses_left == 0
+
+def test_winning_seventh_try(game):
+    code = "@!$#"
+    game.start(code)
+
+    for i in range(6):
+        assert game.handle_turn("@@@@") is None and game.nr_of_guesses_left == MAX_TRIES-i-1
+    assert game.handle_turn("@!$#") == Msg.GameWon and game.nr_of_guesses_left == 3
+
+def test_won_game(won_game):
+    assert won_game.handle_turn("@!$#") == Msg.GameNotRunning
+
+@pytest.mark.parametrize("input_str",["!!!!", "!!!", "!!!!!", "a!!!"])
+def test_game_not_running(game, input_str):
+    assert game.handle_turn(input_str) == Msg.GameNotRunning
 
 # def test_board(game):
 #     game.start("!@#$")
