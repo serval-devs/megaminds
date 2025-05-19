@@ -31,7 +31,8 @@ Check the result and the history after a guess
     And The Game Is Started With Code #%#$
     When The Game Receives A New Guess #%%#
     Then Results should be ${result} #P=2, S=1
-    And History should have guess #%%#
+    And History Should Have Guess #%%#
+    And History Should Have Result ${result}
 
 Is the attempt counter decreasing
     Given The Game Is Started
@@ -41,9 +42,13 @@ Is the attempt counter decreasing
 
 Losing a Game
     Given The Game Is Started
-    And The Game Is Started With Code ${code}
-    When The Game Receives 10 Guesses for ${code}
-    Then
+    And The Game Is Started With Code #%#$
+    When The Game Receives 10 Guesses for #%#$
+    Then The Game Should Show Lose message
     
 Winning a Game
-Is it possible to start a new game after end game
+    Given The Game Is Started
+    And The Game Is Started With Code #%%#
+    When The Game Receives A New Guess #%%#
+    Then The Game Should Show Winner message
+
