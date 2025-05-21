@@ -10,20 +10,20 @@ Start a new game and verify of a code is generated
 Verify that we get a error when the guess is too short
     Given The Game Is Started
     And The Game Is Started With Code #$!@
-    When The Game Receives A New Guess #$!    #what is wrong
-    Then The Game reports error ${error report}
-
+    And The Game Receives The Input !
+    Then The Game Gives An Error When The Guess Is Too Short
 
 Verify that we get a error when the guess is too long
     Given The Game Is Started
     And The Game Is Started With Code #$!@
-    When The Game Receives A New Guess #$!!$#    #what is wrong
-    Then The Game reports error ${error report}
+    And The Game Receives The Input !!!!!
+    Then The Game Gives An Error When The Guess Is Too Long
 
 Verify that we get a error when the guess has the wrong signs
-    Given The Game Is Started With Code #$!@
-    When The Game Receives A New Guess #&*!    #what is wrong
-    Then The Game reports error ${error report}
+    Given The Game Is Started
+    And The Game Is Started With Code #$!@
+    And The Game Receives The Input abcd
+    Then The Game Gives An Error When The Guess Contains Wrong Signs
 
 Check the result and the history after a guess
     Given The Game Is Started With Code #%#$

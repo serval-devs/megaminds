@@ -123,7 +123,7 @@ def test_cannot_win_after_max_tries(game):
 
     for i in range(MAX_TRIES):
         assert game.handle_turn("@@@@") is None and game.nr_of_guesses_left == MAX_TRIES-i-1
-    assert game.handle_turn("@!$#") == Msg.ReachedMaxGuesses and game.nr_of_guesses_left == 0
+    assert game.handle_turn("@!$#") is Msg.GameNotRunning and game.nr_of_guesses_left == 0
 
 def test_winning_seventh_try(game):
     code = "@!$#"
@@ -140,6 +140,17 @@ def test_won_game(won_game):
 def test_game_not_running(game, input_str):
     assert game.handle_turn(input_str) == Msg.GameNotRunning
 
+def test_get_board(game):
+    game.start("!!@#")
+    assert game.handle_turn("!#%%") is None
+    assert game.get_board_entries() == ["!#%% | P1, S1"]
+    assert game.handle_turn("!!##") is None
+    assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0"]
+    assert game.handle_turn("!!@#") is Msg.GameWon
+    assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0", "!!@# | P4, S0"]
+    assert game.handle_turn("!!@#") is Msg.GameNotRunning
+    # assert game.get_board_entries() == ["!#%% | P1, S1", "!!## | P3, S0", "!!@# | P4, S0", "!!@# | P4, S0"]
+    print(game.get_board_entries())
 # def test_board(game):
 #     game.start("!@#$")
 #     assert game.handle_turn("!%%%") is None

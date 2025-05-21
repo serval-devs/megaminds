@@ -1,5 +1,5 @@
 *** Settings ***
-Library    megaminds.bdd_test.game_test_api.GameKeywords
+Library    bdd_test.game_test_api.GameKeywords
 
 *** Keywords ***
 Start a new board game
@@ -27,6 +27,21 @@ History should have guess ${input}
 History Should Have Result ${result}
     ${history}=    Get The Game History
     Should Contain    ${history}    ${result}
+
+The Game Receives The Input ${input}
+    set test variable    $guess    ${input}
+
+The Game Gives An Error When The Guess Is Too Short
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Not enough signs entered.
+
+The Game Gives An Error When The Guess Is Too Long
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Too many signs entered.
+
+The Game Gives An Error When The Guess Contains Wrong Signs
+    ${error}=    The Game Receives A New Guess ${guess}
+    Should Be Equal    ${error}    Invalid signs entered.
 
 The Game Receives ${amount} Guesses for ${code}
     FOR    ${index}    IN RANGE    ${amount}

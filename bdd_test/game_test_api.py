@@ -1,4 +1,4 @@
-from megaminds.game.game import Game, _validate_code
+from game.game import Game, _validate_code
 from robot.api.deco import keyword
 
 class GameKeywords:
