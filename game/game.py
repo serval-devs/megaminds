@@ -86,7 +86,7 @@ class Game:
         self._board.append(f"{guess} | {result}")
 
     def handle_turn(self, guess: str) -> Optional[Msg]:
-        if self._game_state == GameState.NotRunning:
+        if self._game_state != GameState.Running:
             return Msg.GameNotRunning
 
         if self.nr_of_guesses_left > 0:
@@ -99,9 +99,7 @@ class Game:
             if self.nr_of_guesses_left == 0:
                 self._game_state = GameState.Lost
         else:
-            return Msg.ReachedMaxGuesses
-
-
+            return Msg.GameNotRunning
 
     def get_board_entries(self) -> List[str]:
         return self._board

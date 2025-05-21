@@ -1,4 +1,4 @@
-from game.game import Game
+from game.game import Game, _validate_code
 from robot.api.deco import keyword
 
 class GameKeywords:
@@ -20,8 +20,8 @@ class GameKeywords:
 
     @keyword("The Game Receives A New Guess ${input}",
         types={'input': str})
-    def handle_turn(self, input_str: str):
-        return self.game.handle_turn(input_str)
+    def handle_turn(self, input: str):
+        return self.game.handle_turn(input)
 
     @keyword("Get The Game History")
     def get_board_entries(self):
@@ -42,3 +42,12 @@ class GameKeywords:
     @keyword("Get All The Results")
     def get_results(self):
         return self.game.get_results()
+
+    @keyword ("Get the secret code")
+    def get_code(self):
+        return self.game._secret_code
+
+    @keyword("Get an invalid message ${input}",
+             types={'input': str})
+    def get_message(self):
+        return _validate_code(input)
