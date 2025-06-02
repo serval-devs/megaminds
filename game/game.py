@@ -65,7 +65,7 @@ class Game:
 
     def start(self, code_string: str = None) -> Optional[Msg]:
         if code_string is None:
-            self._secret_code = choices(ACCEPTED_SYMBOLS, k=CODE_LENGTH)
+            self._secret_code = "".join(choices(ACCEPTED_SYMBOLS, k=CODE_LENGTH))
             self._game_state = GameState.Running
         elif _validate_code(code_string) is None:
             self._secret_code = code_string

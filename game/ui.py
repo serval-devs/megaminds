@@ -38,7 +38,7 @@ clear = lambda: os.system('cls')
 class UI:
     def __init__(self):
         self.game = Game()
-        self.game.start("!!@#")
+        self.game.start()
 
     def draw_instructions(self):
         print(SEPARATOR_STRING)
@@ -70,7 +70,7 @@ class UI:
         restart = input()
         if restart == "":
             self.game = Game()
-            self.game.start("!!@#")
+            self.game.start()
 
     def run_game_loop(self):
         while True:
